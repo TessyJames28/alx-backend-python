@@ -4,7 +4,7 @@
 from typing import List
 
 
-def sum_list(input_list: list[float]) -> float:
-    """ function that takes list(float) as input and return float value 
+def sum_list(input_list: List[float]) -> float:
+    """ function that takes list(float) as input and return float value
     """
-    return float(sum(input_list))
+    return sum(input_list)
