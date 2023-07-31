@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """parameterize a unit test"""
 from utils import access_nested_map
-import unittest
 from parameterized import parameterized
+import unittest
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -16,6 +16,15 @@ class TestAccessNestedMap(unittest.TestCase):
     def test_access_nested_map(self, x, y, expected_result):
         """method that test the access_nested_map"""
         self.assertEquals(access_nested_map(x, y), expected_result)
+
+    @parameterized.expand([
+        ({}, ("a",), KeyError),
+        ({"a": 1}, ("a", "b"), KeyError),
+        ])
+    def test_access_nested_map_exception(self, x, y, expected_result):
+        """assert that the function raises error"""
+        with self.assertRaises(expected_result):
+            access_nested_map(x, y)
 
 
 if __name__ == "__main__":
