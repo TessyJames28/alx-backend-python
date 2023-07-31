@@ -4,6 +4,7 @@ from client import GithubOrgClient
 import unittest
 from unittest.mock import patch
 from parameterized import parameterized
+from utils import get_json
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -27,3 +28,11 @@ class TestGithubOrgClient(unittest.TestCase):
         with patch("client.GithubOrgClient._public_repos_url") as mock_respons:
             mock_respons.return_value = "abc.com"
             self.assertEquals(GithubOrgClient._public_repos_url(), "abc.com")
+
+    def test_public_repos(self):
+        """test public_repos"""
+        with patch('client.GithubOrgClient.public_repos') as mock_response:
+            mock_response.return_value = 'github.com'
+            result = GithubOrgClient.public_repos()
+            self.assertEqual(result, 'github.com')
+            mock_response.assert_called_once()
