@@ -76,12 +76,20 @@ WSGI_APPLICATION = 'messaging_app.wsgi.application'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
     'rest_framework.authentication.SessionAuthentication', 
-    'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated', # Don't Touch! Override in your view
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
     ],    
 }
+
+AUTH_USER_MODEL = 'chats.User' 
+
 
 
 # Database
