@@ -29,35 +29,77 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(_("Password must not contain spaces."))
         
         return password
+    
+
+class MessageSerializer(serializers.ModelSerializer):
+    """
+    Handles Message model serialization
+    With receiver as read_only field
+    """
+    recipient_name = serializers.CharField(source='recipient.first_name', read_only=True)
+    sender_name = serializers.CharField(source='sender.first_name', read_only=True)
+
+    class Meta:
+        model = Message
+        fields = [
+            'message_id', 'message_body', 'sender', 'recipient',
+            'recipient_name', 'sender_name', 'sent_at', 'is_read'
+        ]
+        read_only_fields = ['message_id', 'sender', 'sender_name',
+                            'recipient_name', 'sent_at', 'is_read']
+        
+    def create(self, validated_data):
+        """Create a new message"""
+        #  The conversation will be auto-created in the model's save method
+        message = super().create(validated_data)
+
+        # Updated conversation timestamp
+        message.conversation.save() # This updates the updated_at_field
+
+        return message 
+
 
 
 class ConversationSerializer(serializers.ModelSerializer):
     """
     Handles Conversation model serialization
+    Participant details with last message
     """
-    participants_names = serializers.SerializerMethodField()
+    # last_message = serializers.SerializerMethodField()
+    unread_count = serializers.SerializerMethodField()
+    messages = MessageSerializer(many=True, read_only=True)
     
     class Meta:
         model = Conversation
-        fields = '__all__'
-
-    def get_participant_names(self, obj):
-        """
-        Methods that gets names of participants
-        in a conversation
-        """
-        return [
-            f"{user.first_name} {user.last_name}"
-            for user in obj.participants.all()
-            ]
-
-
-class MessageSerializer(serializers.ModelSerializer):
-    """
-    Handles Message model serialization
-    """
-    summary = serializers.CharField(read_only=True)
+        fields = ['conversation_id',  'user1', 'user2', 'unread_count', 'messages']
+        read_only_fields = ['conversation_id', 'created_at', 'updated_at']
     
-    class Meta:
-        model = Message
-        fields = '__all__'
+
+    # def get_last_message(self, obj):
+    #     """
+    #     Get the last message in the conversation
+    #     """
+    #     last_message = obj.messages.first()
+    #     if last_message:
+    #         return {
+    #             'message_body': last_message.message_body,
+    #             'sender': last_message.sender.first_name,
+    #             'sent_at': last_message.sent_at,
+    #             'is_read': last_message.is_read
+    #         }
+    #     return None
+    
+
+    def get_unread_count(self, obj):
+        """
+        Get count of unread messages for current user
+        """
+        request = self.context.get('request')
+        if request and request.user:
+            return obj.messages.filter(
+                recipient=request.user,
+                is_read=False
+            ).count()
+        return 0
+    
+
