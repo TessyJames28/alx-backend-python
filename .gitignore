@@ -136,6 +136,14 @@ ENV/
 env.bak/
 venv.bak/
 
+
+# Ignore Django migration files
+**/migrations/
+**/migrations/*.py
+!**/migrations/__init__.py
+!**/migrations/__init__.pyc
+!**/migrations/__init__.pyo
+
 # Spyder project settings
 .spyderproject
 .spyproject
