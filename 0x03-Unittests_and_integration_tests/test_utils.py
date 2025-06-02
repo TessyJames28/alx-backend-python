@@ -2,13 +2,13 @@
 """Test case for utils.py file
 unittest for access_nested_map
 """
+import unittest.mock
+from parameterized import parameterized, parameterized_class
+import unittest
 access_nested_map = __import__("utils").access_nested_map
 utils = __import__("utils")
 get_json = __import__("utils").get_json
 memoize = __import__("utils").memoize
-import unittest.mock
-from parameterized import parameterized, parameterized_class
-import unittest
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -21,20 +21,17 @@ class TestAccessNestedMap(unittest.TestCase):
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
         ({"a": {"b": 2}}, ("a", "b"), 2),
     ])
-
-    
     def test_access_nested_map(self, nested_map, path, result):
         """test cases for access nested map method
         """
         self.assertEqual(access_nested_map(nested_map, path), result)
 
-
     @parameterized.expand([
         ({}, ("a",), KeyError),
         ({"a": 1}, ("a", "b"), KeyError),
     ])
-
-    def test_access_nested_map_exception(self, nested_map, path, expected_exception):
+    def test_access_nested_map_exception(self, nested_map,
+                                         path, expected_exception):
         """
         Tests that the proper exception is raised
         Raises KeyError exception
@@ -52,7 +49,6 @@ class TestGetJson(unittest.TestCase):
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False}),
     ])
-
     @unittest.mock.patch("utils.requests.get")
     def test_get_json(self, url, test_payload, mock_get):
         """
@@ -62,7 +58,7 @@ class TestGetJson(unittest.TestCase):
 
         result = get_json(url)
 
-        self.assertEqual(result,test_payload)
+        self.assertEqual(result, test_payload)
 
         mock_get.assert_called_once_with(url)
 
@@ -72,6 +68,7 @@ class TestMemoize(unittest.TestCase):
     Test cases for the memoize function
     Parameterized and patched
     """
+
     def test_memoize(self):
         """
         Test for memoize function
@@ -85,14 +82,14 @@ class TestMemoize(unittest.TestCase):
             @memoize
             def a_property(self):
                 return self.a_method()
-        
+
         my_class = TestClass()
 
         with unittest.mock.patch.object(my_class, 'a_method') as mock_test:
             my_class.a_property()
             my_class.a_property()
             mock_test.assert_called_once()
-        
+
 
 if __name__ == '__main__':
     unittest.main()
