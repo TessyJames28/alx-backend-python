@@ -5,6 +5,7 @@ unittest for access_nested_map
 access_nested_map = __import__("utils").access_nested_map
 utils = __import__("utils")
 get_json = __import__("utils").get_json
+memoize = __import__("utils").memoize
 import unittest.mock
 from parameterized import parameterized, parameterized_class
 import unittest
@@ -65,6 +66,33 @@ class TestGetJson(unittest.TestCase):
 
         mock_get.assert_called_once_with(url)
 
+
+class TestMemoize(unittest.TestCase):
+    """
+    Test cases for the memoize function
+    Parameterized and patched
+    """
+    def test_memoize(self):
+        """
+        Test for memoize function
+        """
+
+        class TestClass:
+
+            def a_method(self):
+                return 42
+
+            @memoize
+            def a_property(self):
+                return self.a_method()
+        
+        my_class = TestClass()
+
+        with unittest.mock.patch.object(my_class, 'a_method') as mock_test:
+            my_class.a_property()
+            my_class.a_property()
+            mock_test.assert_called_once()
+        
 
 if __name__ == '__main__':
     unittest.main()
