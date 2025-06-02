@@ -9,22 +9,21 @@ import unittest
 get_json = __import__("utils").get_json
 
 
-@parameterized.expand([
-    ("google"),
-    ("abc"),
-])
-
 class TestGithubOrgClient(unittest.TestCase):
-    """class to test GithubOrgClient class"""
-
+    """
+    Handles unittest for GitubOrgClient class
+    Ensures GithubOrgClient returns the correct value
+    """
     @parameterized.expand([
-        ("google"),
-        ("abc"),
-        ])
-    def test_org(self, x):
-        """test that GithubOrgClient.org returns the correct value"""
-
+        ("google",),
+        ("abc",),
+    ])
+    def test_org(self, company):
+        """
+        Ensures get_json is called once with expected argument
+        """
         with patch("client.GithubOrgClient.org") as mock_response:
-            GithubOrgClient.ORG_URL = x
+            GithubOrgClient.ORG_URL = company
             GithubOrgClient.org()
+
             mock_response.assert_called_once()
