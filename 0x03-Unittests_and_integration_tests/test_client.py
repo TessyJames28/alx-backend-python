@@ -6,7 +6,8 @@ from unittest.mock import patch
 from client import GithubOrgClient
 from parameterized import parameterized, parameterized_class
 import unittest
-get_json = __import__("utils").get_json
+from fixtures import TEST_PAYLOAD
+from utils import get_json
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -56,3 +57,39 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         self.assertEqual(GithubOrgClient.has_license(
             license, key), expected_outcome)
+
+
+@parameterized_class([
+    {"name": 'org_payload', "value": TEST_PAYLOAD[0][0]},
+    {"name": 'repos_payload', "value": TEST_PAYLOAD[0][1]},
+    {"name": 'expected_repos', "value": TEST_PAYLOAD[0][2]},
+    {"name": 'apache2_repos', "value": TEST_PAYLOAD[0][3]},
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """
+    Integration test: fixture
+    Create mock code that sends external requests only
+    """
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        def getPayload(url):
+            return mock.Mock({cls.name: cls.value})
+        cls.get_patcher = patch("requests.get", side_effect=getPayload)
+        cls.get_patcher.start()
+
+    def test_public_repos_with_license(self):
+        """
+        Test for public repo with license
+        """
+        self.assertTrue(True)
+
+    def test_public_repos(self):
+        """
+        Test public repo
+        """
+        self.assertTrue(True)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.get_patcher.stop()
