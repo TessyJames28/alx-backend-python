@@ -24,7 +24,7 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         Ensures get_json is called once with expected argument
         """
-        with patch("client.GithubOrgClient") as mock_response:
+        with patch("client.GithubOrgClient.org") as mock_response:
             GithubOrgClient.ORG_URL = company
             GithubOrgClient.org()
 
