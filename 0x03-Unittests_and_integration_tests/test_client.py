@@ -45,3 +45,14 @@ class TestGithubOrgClient(unittest.TestCase):
         result = GithubOrgClient.public_repos()
         self.assertEqual(result, "google.com")
         mock_resp.assert_called_once()
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False),
+    ])
+    def test_has_license(self, license, key, expected_outcome):
+        """
+        Test has license with parameterized inputs
+        """
+        self.assertEqual(GithubOrgClient.has_license(
+            license, key), expected_outcome)
