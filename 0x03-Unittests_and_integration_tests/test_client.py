@@ -15,17 +15,16 @@ get_json = __import__("utils").get_json
 ])
 
 class TestGithubOrgClient(unittest.TestCase):
-    """
-    Handles unittest for GitubOrgClient class
-    Ensures GithubOrgClient returns the correct value
-    """
+    """class to test GithubOrgClient class"""
 
-    def test_org(self, company):
-        """
-        Ensures get_json is called once with expected argument
-        """
+    @parameterized.expand([
+        ("google"),
+        ("abc"),
+        ])
+    def test_org(self, x):
+        """test that GithubOrgClient.org returns the correct value"""
+
         with patch("client.GithubOrgClient.org") as mock_response:
-            GithubOrgClient.ORG_URL = company
+            GithubOrgClient.ORG_URL = x
             GithubOrgClient.org()
-
             mock_response.assert_called_once()
