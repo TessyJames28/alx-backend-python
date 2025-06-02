@@ -28,7 +28,6 @@ class TestGithubOrgClient(unittest.TestCase):
 
             mock_response.assert_called_once()
 
-
     def test_public_repos_url(self):
         """
         Ensures test returns a known payload
@@ -37,13 +36,12 @@ class TestGithubOrgClient(unittest.TestCase):
             mock_resp.return_value = "abc.com"
             self.assertEqual(GithubOrgClient._public_repos_url(), "abc.com")
 
-
-    def test_public_repos(self):
+    @patch("client.GithubOrgClient.public_repos")
+    def test_public_repos(self, mock_resp):
         """
         Testcase to return a payload of your choice
         """
-        with patch("client.GithubOrgClient.public_repos") as mock_resp:
-            mock_resp.return_value = "google.com"
-            result = GithubOrgClient.public_repos()
-            self.assertEqual(result, "google.com")
-            mock_resp.assert_called_once()
+        mock_resp.return_value = "google.com"
+        result = GithubOrgClient.public_repos()
+        self.assertEqual(result, "google.com")
+        mock_resp.assert_called_once()
