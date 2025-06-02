@@ -73,3 +73,11 @@ def memoize(fn: Callable) -> Callable:
         return getattr(self, attr_name)
 
     return property(memoized)
+
+
+# nested_map={}
+# path=("a",)
+# access_nested_map(nested_map, path)
+# nested_map={"a": 1}
+# path=("a", "b")
+# access_nested_map(nested_map, path)
