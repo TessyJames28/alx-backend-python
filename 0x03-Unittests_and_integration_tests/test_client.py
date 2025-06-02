@@ -27,3 +27,12 @@ class TestGithubOrgClient(unittest.TestCase):
             GithubOrgClient.org()
 
             mock_response.assert_called_once()
+
+
+    def test_public_repos_url(self):
+        """
+        Ensures test returns a known payload
+        """
+        with patch("client.GithubOrgClient._public_repos_url") as mock_resp:
+            mock_resp.return_value = "abc.com"
+            self.assertEqual(GithubOrgClient._public_repos_url(), "abc.com")
