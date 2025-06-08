@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from rest_framework import viewsets, status, filters
+from rest_framework.status import HTTP_403_FORBIDDEN
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db.models import Q
 from .models import Conversation, Message
@@ -36,6 +38,12 @@ class ConversationViewSet(viewsets.ModelViewSet):
         HTTP method to list conversation
         Show only conversation where the current user is participant
         """
+        if not request.user.is_authenticated:
+            return Response({
+                "status": "error",
+                "status_code": HTTP_403_FORBIDDEN,
+                "message": "You don't have the permission"
+            })
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
 
@@ -57,7 +65,9 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     permission_classes = [IsParticipantOfConversation]
-    
+    authentication_classes = [IsAuthenticated]
+    authentication_classes = [IsAuthenticated]
+
     # Filter by conversation_id and sender_id
     filterset_fields = ['conversation', 'sender', 'recipient', 'is_read']
     search_fields = ['message_body'] 
@@ -79,6 +89,12 @@ class MessageViewSet(viewsets.ModelViewSet):
         """
         Handles endpoint for conversation listing
         """
+        if not request.user.is_authenticated:
+            return Response({
+                "status": "error",
+                "status_code": HTTP_403_FORBIDDEN,
+                "message": "You don't have the permission"
+            })
         queryset = self.get_queryset()
 
         conversation_id = request.query_params.get('conversation_id')
