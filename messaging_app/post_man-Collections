@@ -1,0 +1,51 @@
+# Register user
+POST /register/
+{
+  "username": "john123",
+  "password": "strongpassword",
+  "email": "john@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  "phone_number": "1234567890"
+}
+
+# Login user (JWT token)
+POST /login/
+{
+  "username": "john123",
+  "password": "strongpassword"
+}
+
+# Refresh token
+POST /token/refresh/
+{
+  "refresh": "<refresh_token>"
+}
+
+# Verify token
+POST /token/verify/
+{
+  "token": "<access_token>"
+}
+
+# Create conversation (automatically via sending message)
+
+# Send message (creates conversation if doesn't exist)
+POST /messages/
+Authorization: Bearer <access_token>
+{
+  "message_body": "Hello, how are you?",
+  "recipient": "<recipient_user_id>"
+}
+
+# Fetch conversations for current user
+GET /conversations/
+Authorization: Bearer <access_token>
+
+# Fetch messages in a conversation
+GET /messages/?conversation_id=<conversation_uuid>
+Authorization: Bearer <access_token>
+
+# Fetch messages with a specific user
+GET /messages/?recipient_id=<recipient_user_id>
+Authorization: Bearer <access_token>
