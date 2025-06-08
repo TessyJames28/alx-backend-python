@@ -4,7 +4,8 @@ from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
 from django.db.models import Q
-from .models import Conversation, Message, User
+from .models import Conversation, Message
+from .permissions import IsParticipantOfConversation
 from .serializers import ConversationSerializer, MessageSerializer
 
 # Create your views here.
@@ -17,6 +18,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-updated_at']
+    permission_classes = [IsParticipantOfConversation]
 
 
     def get_queryset(self):
@@ -54,7 +56,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     serializer_class = MessageSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-
+    permission_classes = [IsParticipantOfConversation]
+    
     # Filter by conversation_id and sender_id
     filterset_fields = ['conversation', 'sender', 'recipient', 'is_read']
     search_fields = ['message_body'] 
