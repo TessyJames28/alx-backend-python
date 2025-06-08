@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from django.db.models import Q
 from .models import Conversation, Message
 from .filters import MessageFilter
+from .pagination import StandardResultSetPagination
 from .permissions import IsParticipantOfConversation
 from .serializers import ConversationSerializer, MessageSerializer
 
@@ -23,6 +24,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-updated_at']
     permission_classes = [IsParticipantOfConversation]
+    pagination_class = StandardResultSetPagination
 
 
     def get_queryset(self):
@@ -69,6 +71,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = [IsParticipantOfConversation]
     authentication_classes = [IsAuthenticated]
     filterset_class = MessageFilter
+    pagination_class = StandardResultSetPagination
 
     # Filter by conversation_id and sender_id
     filterset_fields = ['conversation', 'sender', 'recipient', 'is_read']
