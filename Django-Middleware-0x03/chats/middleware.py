@@ -28,3 +28,24 @@ class RequestLoggingMiddleware:
             print("Logging failed:", e)
 
         return response
+
+
+
+class RestrictAccessByTimeMiddleware:
+    """
+    implement a middleware that restricts access to the
+    messaging up during certain hours of the day
+    """
+
+    def __int__(self, get_response):
+        self.get_response = get_response
+
+    
+    def __call__(self, request):
+        """
+        Create a middleware that logs each user’s requests to a file,
+        including the timestamp, user and the request path.
+        """
+        response = self.get_response(request)
+
+        return response
