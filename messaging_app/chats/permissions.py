@@ -1,12 +1,18 @@
 from rest_framework import permissions, BasePermission
 from .models import Conversation
 
-class IsParticipant(BasePermission):
+class IsParticipantOfConversation(BasePermission, permissions.IsAuthenticated):
     """
     permission class to grant access to participants of a conversation
     """
     
     def has_permission(self, request, view):
+        """
+        Custom permissions for participants of a conversation
+        This method checks if the user is authenticated and if they are a participant
+        in the conversation specified by the conversation_id in the URL.
+        """
+        accepted_methods = ['GET', 'POST', 'UPDATE', 'DELETE']
         user = request.user
 
         # Check if the user is authenticated
@@ -17,6 +23,7 @@ class IsParticipant(BasePermission):
             return False
         try:
             conversation = Conversation.objects.get(conversation_id=conversation_id)
-            return user in [conversation.user1, conversation.user2]:
+            if user in [conversation.user1, conversation.user2] and user in accepted_methods:
+                return True
         except Conversation.DoesNotExist:
             return False
