@@ -12,7 +12,7 @@ class IsParticipantOfConversation(BasePermission, permissions.IsAuthenticated):
         This method checks if the user is authenticated and if they are a participant
         in the conversation specified by the conversation_id in the URL.
         """
-        accepted_methods = ['GET', 'POST', 'UPDATE', 'DELETE']
+        accepted_methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
         user = request.user
 
         # Check if the user is authenticated
