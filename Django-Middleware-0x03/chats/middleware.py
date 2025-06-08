@@ -19,12 +19,12 @@ class RequestLoggingMiddleware:
         try:
             log_dir = os.path.join(settings.BASE_DIR)
             file_path = os.path.join(log_dir, "requests.log")
-            user = request.user if request.user.is_authenticated else "Anonymous"
+            user = request.user.user_id if request.user.is_authenticated else "Anonymous"
 
             with open(file_path, 'a') as logs: 
                 logs.write(f"{datetime.now()} - User: {user} - Path: {request.path}\n")
 
         except Exception as e:
             print("Logging failed:", e)
-            
+
         return response
