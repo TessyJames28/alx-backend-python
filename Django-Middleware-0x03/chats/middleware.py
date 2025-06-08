@@ -1,4 +1,4 @@
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from django.conf import settings
 import os
 from django.http import HttpResponseForbidden
@@ -60,3 +60,67 @@ class RestrictAccessByTimeMiddleware:
         response = self.get_response(request)
 
         return response
+    
+
+ip_post_cache = {}
+
+class OffensiveLanguageMiddleware:
+    """
+    Implement middleware that limits the number of chat messages
+    a user can send within a certain time window, based on their
+    IP address.
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+
+    def __init__(self, request):
+        """
+        tracks number of chat messages sent by each ip address
+        and implement a time based limit i.e 5 messages per minutes
+        """
+        if request.method == "POST":
+            ip = self.get_client_ip(request)
+            now = datetime.now()
+
+            # Initialize cache for new ip
+            if ip not in ip_post_cache:
+                ip_post_cache[ip] = {
+                    "timestamps": [now]
+                }
+                
+            else:
+                timestamps = ip_post_cache[ip]["timestamps"]
+
+                # Remove older timestamp of more than 1 mins
+                timestamps = [
+                    ts for ts in timestamps
+                    if now - ts < timedelta(minutes=1)
+                ]
+
+                timestamps.append(now)
+
+                ip_post_cache[ip]["timestamps"] = timestamps
+
+                if len(timestamps) > 5:
+                    return HttpResponseForbidden(
+                        "You can only send 5 messages per minutes"
+                    )
+
+
+        response = self.get_response
+
+
+        return response
+    
+
+    def get_client_ip(self, request):
+        """Returns client ip address"""
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(",")[0].strip()
+        else:
+            ip = request.META.get("REMOTE_ADDR")
+        
+        return ip
