@@ -2,7 +2,7 @@
 # database one by one.
 
 import sqlite3
-import uuid, os, csv
+import os, csv
 
 
 def connect_db():
@@ -24,7 +24,7 @@ def create_table(connection):
     cursor = connection.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            user_id CHAR(36) PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             age DECIMAL NOT NULL
@@ -57,15 +57,14 @@ def insert_data(connection, data):
                         continue  # skip malformed rows
 
                     name, email, age = row
-                    uid = str(uuid.uuid4())
 
                     # Check for duplicates by email
                     cursor.execute("SELECT 1 FROM users WHERE email = ?", (email,))
                     if not cursor.fetchone():
                         cursor.execute("""
-                            INSERT INTO users (user_id, name, email, age)
-                            VALUES (?, ?, ?, ?)
-                        """, (uid, name.strip(), email.strip(), age.strip()))
+                            INSERT INTO users (name, email, age)
+                            VALUES (?, ?, ?)
+                        """, (name.strip(), email.strip(), age.strip()))
                         inserted += 1
 
                 connection.commit()
