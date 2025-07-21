@@ -17,7 +17,7 @@ async def async_fetch_users():
 async def async_fetch_older_users():
     """Async function to fetch older users"""
     async with aiosqlite.connect(db_path) as db:
-        cursor = await db.execute("SELECT * FROM users WHERE age > 110")
+        cursor = await db.execute("SELECT * FROM users WHERE age > 40")
         older_users = await cursor.fetchall()
         print(older_users)
     
