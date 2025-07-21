@@ -2,12 +2,15 @@ import sqlite3
 import functools
 
 def with_db_connection(func):
-    """ your code goes here""" 
+    """ Decorator to connect to the database""" 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         conn = sqlite3.connect('users.db')
-        result = func(conn, *args, **kwargs)
-        return result
+        try:
+            result = func(conn, *args, **kwargs)
+            return result
+        except Exception as e:
+            raise
     return wrapper
 
 @with_db_connection 
