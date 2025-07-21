@@ -10,8 +10,9 @@ def log_queries(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         time = datetime.now()
+        query = kwargs.get("query") or (args[0] if args else "UNKWOWN QUERY")
         result = func(*args, **kwargs)
-        print(f"{time} - {result}")
+        print(f"[{time}] Executing query: {query}")
         return result
     return wrapper 
 
