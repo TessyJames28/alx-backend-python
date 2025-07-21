@@ -10,7 +10,9 @@ def log_queries(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         time = datetime.now()
-        print(f"{time} - {func(*args, **kwargs)}")
+        result = func(*args, **kwargs)
+        print(f"{time} - {result}")
+        return result
     return wrapper 
 
 

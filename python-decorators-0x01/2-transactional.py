@@ -11,19 +11,16 @@ def transactional(func):
     """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        conn = args[0] if args else kwargs.get("conn")
         try:
             func(*args, **kwargs)
-            conn = args[0]
-            conn.commit
+            conn.commit()
         except Exception as e:
             conn.rollback()
 
         finally:
             conn.close()
-
-
-
-
+    return wrapper
 
 
 @with_db_connection 
