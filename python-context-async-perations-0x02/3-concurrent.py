@@ -12,6 +12,7 @@ async def async_fetch_users():
         cursor = await db.execute("SELECT * FROM users")
         users = await cursor.fetchall()
         print(users)
+        return users
 
 
 async def async_fetch_older_users():
@@ -20,6 +21,7 @@ async def async_fetch_older_users():
         cursor = await db.execute("SELECT * FROM users WHERE age > 40")
         older_users = await cursor.fetchall()
         print(older_users)
+        return older_users
     
 
 async def fetch_concurrently():
