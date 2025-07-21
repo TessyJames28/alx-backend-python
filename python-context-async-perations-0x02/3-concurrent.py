@@ -22,10 +22,10 @@ async def async_fetch_older_users():
         print(older_users)
     
 
-async def main():
+async def fetch_concurrently():
     await asyncio.gather(
         async_fetch_users(),
         async_fetch_older_users(),
     )
 
-asyncio.run(main())
+asyncio.run(fetch_concurrently())
