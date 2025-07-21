@@ -14,3 +14,9 @@ class DatabaseConnection:
     
     def __exit__(self, type, value, traceback):
         self.conn.close()
+
+
+with DatabaseConnection() as conn:
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users")
+    print(cursor.fetchall())
